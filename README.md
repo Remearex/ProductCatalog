@@ -102,3 +102,5 @@ Welcome to my product catalog! This application supports **CRUD** operations for
 #
 
 To view the source code, navigate to ProductCatalog/backend/catalog, and all the relevant models, views, serializers, and urls are located in that folder.
+
+AI was used for general syntax, non-logic-related boilerplate, and App.css
