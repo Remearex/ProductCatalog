@@ -28,6 +28,7 @@ export default function App() {
         <div className="container">
             <div className={`page ${viewMode === "query" ? "active-left" : "slide-left"}`}>
                 <ProductFilterPage
+                    viewMode = {viewMode}
                     onSelectProduct={(id) => {
                         setSelectedProductId(id);
                         setViewMode("detail");

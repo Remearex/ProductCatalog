@@ -11,7 +11,7 @@
 import React, { useState, useEffect } from "react";
 import ProductForm from './ProductForm';
 
-export default function ProductFilterPage({ onSelectProduct }) {
+export default function ProductFilterPage({ viewMode, onSelectProduct }) {
     const [categories, setCategories] = useState([]);
     const [tags, setTags] = useState([]);
 
@@ -49,6 +49,32 @@ export default function ProductFilterPage({ onSelectProduct }) {
         fetchProducts();
     }, [selectedCategory, selectedTags, searchDesc]);
 
+    // Fetch products and clear the editing products ID list whenever switching view mode between query and detail
+    useEffect(() => {
+        fetchProducts();
+        setEditProductIds(new Set());
+    }, [viewMode]);
+
+    // Updates selected tags when any tag is toggled
+    const toggleTag = (tagId) => {
+        setSelectedTags((prevTags) =>
+            prevTags.includes(tagId) ? prevTags.filter((id) => id !== tagId) : [...prevTags, tagId]
+        );
+    };
+
+    // Handler for product deletion
+    const deleteProduct = async (productId) => {
+        try {
+            await fetch(`/products/${productId}/delete/`, {
+                method: "DELETE",
+                headers: { "Content-Type": "application/json" },
+            });
+        } catch (err) {
+            console.error(`Error deleting product ${productId}`)
+        }
+    }
+
+    // fetches the products for the current query
     async function fetchProducts() {
         try {
             const params = new URLSearchParams();
@@ -62,25 +88,6 @@ export default function ProductFilterPage({ onSelectProduct }) {
             setProducts(data);
         } catch (err) {
             console.error("Error fetching products", err);
-        }
-    }
-
-    // Updates selected tags when any tag is toggled
-    const toggleTag = (tagId) => {
-        setSelectedTags((prevTags) =>
-            prevTags.includes(tagId) ? prevTags.filter((id) => id !== tagId) : [...prevTags, tagId]
-        );
-    };
-
-    // Handler for product deletion
-    const deleteProduct = async (productId) => {
-        try {
-            const res = await fetch(`/products/${productId}/delete/`, {
-                method: "DELETE",
-                headers: { "Content-Type": "application/json" },
-            });
-        } catch (err) {
-            console.error(`Error deleting product ${productId}`)
         }
     }
 

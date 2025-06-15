@@ -7,10 +7,12 @@
  * @component
  */
 import React, { useState, useEffect } from "react";
+import ProductForm from "./ProductForm";
 
 export default function ProductDetail({ productId, onBack, onSelectRecommendation }) {
     const [product, setProduct] = useState(null);
     const [recommendations, setRecommendations] = useState([]);
+    const [displayEditForm, setDisplayEditForm] = useState(false);
 
     // fetches a product's details along with its recommendations
     async function fetchDetails() {
@@ -26,6 +28,7 @@ export default function ProductDetail({ productId, onBack, onSelectRecommendatio
             fetchDetails();
         } else {
             setProduct(null);
+            setRecommendations([]);
         }
     }, [productId]);
 
@@ -49,9 +52,45 @@ export default function ProductDetail({ productId, onBack, onSelectRecommendatio
         onSelectRecommendation(clickedId);
     };
 
+    // Handler for product deletion
+    const deleteProduct = async (productId) => {
+        try {
+            await fetch(`/products/${productId}/delete/`, {
+                method: "DELETE",
+                headers: { "Content-Type": "application/json" },
+            });
+        } catch (err) {
+            console.error(`Error deleting product ${productId}`)
+        }
+    }
+
     return (
         <div style={{ padding: 20 }}>
-            <button onClick={onBack}>← Back</button>
+            <button onClick={() => {
+                onBack();
+                setDisplayEditForm(false);
+            }}>← Back</button>
+            <button
+                onClick={() => {
+                    setDisplayEditForm(true);
+                }}
+                style={{ marginLeft: 10 }}
+            >
+                Edit
+            </button>
+            <button
+                onClick={async () => {
+                    const isConfirmed = window.confirm(`Are you sure you want to delete the product: ${product.name}?`);
+                    if (isConfirmed) {
+                        await deleteProduct(productId);
+                        onBack();
+                        setDisplayEditForm(false);
+                    }
+                }}
+                style={{ marginLeft: 10 }}
+            >
+                Delete
+            </button>
             {product ? (
                 <>
                     <h2>{product.name}</h2>
@@ -72,6 +111,19 @@ export default function ProductDetail({ productId, onBack, onSelectRecommendatio
                 </>
             ) : (
                 <p>Loading...</p>
+            )}
+            {displayEditForm && productId && (
+                <ProductForm
+                    mode={"edit"}
+                    productId={productId}
+                    onClose={() => {
+                        setDisplayEditForm(false);
+                    }}
+                    onSave={() => {
+                        setDisplayEditForm(false);
+                        fetchDetails();
+                    }}
+                />
             )}
         </div>
     );

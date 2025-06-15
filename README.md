@@ -47,6 +47,38 @@ Welcome to my product catalog! This application supports **CRUD** operations for
     ```bash
     npm start
     ```
+    It takes a while to startup the React development server. **Your terminal might be stuck at**
+    ```bash
+    > frontend@0.1.0 start
+    > react-scripts start
+    ```
+    **for a minute**, and after that, a webpage should open automatically. If not, navigate to http://localhost:3000 **The website will also take a minute to load. Please be patient**
+
+    ### Note:
+    The specification asks to commit and push every single file to git, including
+    ```bash
+    node_modules/
+    venv/
+    settings.py
+    ```
+    and all migration files, which is typically not done because they are big, and dynamically generated, so this might cause problems. If There is an issue with node_modules/, delete it in frontend/, then install node dependencies:
+    ```bash
+    npm install
+    ```
+    If there is an issue with venv/, delete it in backend/, then create the virtual environment:
+    ```bash
+    python -m venv venv
+    ```
+    activate it using the second or third command in step 3 depending on your operating system, then install python packages:
+    ```bash
+    pip install -r requirements.txt
+    ```
+    If there is an issue with migrations, delete backend/catalog/migrations/, then remigrate:
+    ```bash
+    python manage.py makemigrations
+    python manage.py migrate
+    ```
+    If there are still problems left, please don't hesitate to contact me at hucharles5@gmail.com I'm happy to join a call and ensure that you can run this smoothly on your end.
 
 ## Features
 
